@@ -4,8 +4,21 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-# column: value
+
+film1:
+  id: 1
+  title: Film One
+  description: Some description
+  year: 2001
+  
+film2:
+  id: 2
+  title: Film two
+  description: Two description
+  year: 2002
+
+film3:
+  id: 3
+  title: Film THREE
+  description: Three description
+  year: 2003

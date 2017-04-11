@@ -8,7 +8,10 @@ class Film < ApplicationRecord
   has_many :ratings
   validates :title, uniqueness: true
   serialize :related_film_ids
+  
+  before_save :set_slug
 
+  
   def average_rating
     num_ratings = ratings.size
     return num_ratings.zero? ? 0.0 : ratings.sum(&:score).to_d / num_ratings
@@ -16,8 +19,13 @@ class Film < ApplicationRecord
   
   def add_related_film(film)
     if self.related_films.exclude?(film)
+      self.related_films.each do |related_film|
+        related_film.related_films << film
+        related_film.save!
+      end
       self.related_films << film
       self.save!
+      self.reload
     end
   end
 
@@ -26,4 +34,11 @@ class Film < ApplicationRecord
    slug_name.gsub!(/[^A-Za-z0-9_]/, '')
    return slug_name
   end
+  
+  def set_slug
+    if self.url_slug.nil?
+      self.url_slug = self.class.to_slug(title)
+    end
+  end
+  
 end

@@ -2,7 +2,7 @@ class FilmsController < ApplicationController
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
 
   FILM_FIELDS = %w(id title description url_slug year)
-  SORT_KEYS = %w(id title year)
+  SORT_KEYS = %w(title year)
   
   before_action :make_fields
   
@@ -21,7 +21,6 @@ class FilmsController < ApplicationController
       end
 
       raise "Invalid value sort_key" if SORT_KEYS.exclude?(sort_key)
-      
       films = Film.all.select(@fields).includes(:ratings).order(sort_key).limit(count).offset(offset)
       render json: films.map {|film| format_film_object(film)}
     rescue => ex
@@ -68,6 +67,15 @@ class FilmsController < ApplicationController
     def format_film_object(film)
       film_hash = film.attributes
       film_hash.delete("id")
+      if params['attributes'].present?
+        # Manually delete keys if the requested attributes only contains methods and not object fields.
+        requested_attributes = params['attributes']
+        film_hash.keys.each do |attrib|
+          if requested_attributes.exclude?(attrib)
+            film_hash.delete(attrib)
+          end
+        end
+      end
       film_hash['related_film_ids'] = film.related_film_ids if params["attributes"].nil? || params["attributes"].include?("related_film_ids")
       film_hash['average_rating'] = film.average_rating().to_s if params["attributes"].nil? || params["attributes"].include?("average_rating")
       return film_hash

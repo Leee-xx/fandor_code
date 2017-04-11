@@ -36,7 +36,6 @@ parameters (all optional):
   sort_key
     description: how to sort the response
     enum: - title
-          - id
           - year
 
 GET /films/{id}
@@ -56,7 +55,7 @@ parameters:
       - related_film_ids
       - average_score
 
-POST /films/{id}/rate
+PATCH /films/{id}/rate
 description: allow a user to rate a certain film
 parameters:
   score

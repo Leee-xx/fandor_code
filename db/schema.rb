@@ -25,7 +25,6 @@ ActiveRecord::Schema.define(version: 20170409174358) do
     t.string   "url_slug"
     t.string   "year"
     t.string   "related_film_ids", default: "--- []\n"
-    t.string   "reviews",          default: "--- []\n"
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
     t.index ["title"], name: "index_films_on_title"
